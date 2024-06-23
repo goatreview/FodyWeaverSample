@@ -9,12 +9,17 @@ using System.Linq;
 
 internal static class CacheManager
 {
-    internal static object GetCacheValue(params object[] parameters)
+    internal static object? GetCacheValue(
+        string declaringType,
+        string methodName,
+        params object[] parameters)
     {
         throw new NotImplementedException();
     }
 
-    internal static void SetCacheValue(object value, params object[] parameters)
+    internal static void SetCacheValue(object value,
+        string declaringType, string methodName,
+        params object[] parameters)
     {
         throw new NotImplementedException();
     }
@@ -101,12 +106,15 @@ public class ModuleWeaver :
     
     private IReadOnlyCollection<Instruction> ReturnGetValueCacheIfAny(MethodDefinition method)
     {
+        
         var instructions = new List<Instruction>
         {
+            Instruction.Create(OpCodes.Ldstr, method.DeclaringType.FullName),
+            Instruction.Create(OpCodes.Ldstr, method.Name),
             Instruction.Create(OpCodes.Ldc_I4, method.Parameters.Count),
             Instruction.Create(OpCodes.Newarr, ModuleDefinition.TypeSystem.Object)
         };
-
+        
         for (var i = 0; i < method.Parameters.Count; i++)
         {
             instructions.Add(Instruction.Create(OpCodes.Dup));
@@ -150,13 +158,16 @@ public class ModuleWeaver :
 
     private IReadOnlyCollection<Instruction> SetCacheValue(MethodDefinition method)
     {
-        var instructions = new List<Instruction>();
+        List<Instruction> instructions =
+        [
 
-        // Duplicate the return value
-        instructions.Add(Instruction.Create(OpCodes.Dup));
-
-        instructions.Add(Instruction.Create(OpCodes.Ldc_I4, method.Parameters.Count));
-        instructions.Add(Instruction.Create(OpCodes.Newarr, ModuleDefinition.TypeSystem.Object));
+            // Duplicate the return value
+            Instruction.Create(OpCodes.Dup),
+            Instruction.Create(OpCodes.Ldstr, method.DeclaringType.FullName),
+            Instruction.Create(OpCodes.Ldstr, method.Name),
+            Instruction.Create(OpCodes.Ldc_I4, method.Parameters.Count),
+            Instruction.Create(OpCodes.Newarr, ModuleDefinition.TypeSystem.Object),
+        ];
 
         for (var i = 0; i<method.Parameters.Count; i++)
         {
