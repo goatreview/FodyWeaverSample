@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net452;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
+    <Authors>Simon Cropp</Authors>
+    <Copyright>Copyright $([System.DateTime]::UtcNow.ToString(yyyy)).</Copyright>
+    <Description>Injects a new type that writes "Hello World".</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <!-- PackageTags are optional. Defaults to 'ILWeaving, Fody, Cecil, AOP' -->
+    <PackageTags>Hello World, ILWeaving, Fody, Cecil, AOP</PackageTags>
+    <PackageOutputPath>$(SolutionDir)/nugets</PackageOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Fody" Version="6.8.0" PrivateAssets="none" />
+    <PackageReference Include="FodyPackaging" Version="6.8.0" PrivateAssets="All" />
+  </ItemGroup>
+</Project>
